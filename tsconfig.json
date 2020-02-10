@@ -17,7 +17,21 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "jar-ngrx": [
+        "dist/jar-ngrx"
+      ],
+      "jar-ngrx/*": [
+        "dist/jar-ngrx/*"
+      ],
+      "@angular/*": [
+        "./node_modules/@angular/*"
+      ],
+      "@ngrx/*": [
+        "./node_modules/@ngrx/*"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
