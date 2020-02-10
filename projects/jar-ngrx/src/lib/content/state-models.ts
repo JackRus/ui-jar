@@ -16,5 +16,5 @@ export interface ModelState extends EntityState<any>
     pendingRequests: number;
 
     // ID OF THE CURRENTLY SELECTED ENTITY
-    selectedId: string;
+    selectedId: string | number;
 }
