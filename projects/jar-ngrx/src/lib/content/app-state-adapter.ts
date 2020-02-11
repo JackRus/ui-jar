@@ -7,7 +7,7 @@ export const modelStateAdapter = createEntityAdapter<any>({
     //sortComparer: (e1: any, e2: any) => e1.order - e2.order  
 });
 
-export class AppStateAdapter {   
+export class AppStateModifier {   
     
     ///////////////////////////////
     ///// APP STATE MODIFIERS /////
@@ -57,17 +57,17 @@ export class AppStateAdapter {
     /// SPECIFIC MODEL STATE MODIFIERS ///
     //////////////////////////////////////
    
-    addOneItem(entity: any, modelStateName: string, appState: AppState): AppState {
+    addOne(entity: any, modelStateName: string, appState: AppState): AppState {
         const modifier = (modelState) => modelStateAdapter.addOne(entity, modelState);
         return this.applyModifier(modifier, modelStateName, appState);
     }       
 
-    addManyItems (entities: any[], modelStateName: string, appState: AppState) : AppState {
+    addMany (entities: any[], modelStateName: string, appState: AppState) : AppState {
         const modifier = (modelState) => modelStateAdapter.addMany(entities, modelState);
         return this.applyModifier(modifier, modelStateName, appState);
     }        
 
-    replaceAllItews (entities: any[], modelStateName: string, appState: AppState) : AppState {
+    replaceAll (entities: any[], modelStateName: string, appState: AppState) : AppState {
         const modifier = (modelState)=> modelStateAdapter.addAll(entities, modelState);
         return this.applyModifier(modifier, modelStateName, appState);
     }
