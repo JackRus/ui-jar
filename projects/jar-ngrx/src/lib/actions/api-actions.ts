@@ -1,4 +1,5 @@
 import { ActionBase } from './action-models';
+import { createAction, props } from '@ngrx/store';
 
 export enum ApiActionTypes {
     
@@ -14,31 +15,31 @@ export enum ApiActionTypes {
     EndRequest = '[API] End Request', 
 }
 
-export class MakeRequest extends ActionBase {
-    constructor(id: string, modelStateName: string) { super(modelStateName, ApiActionTypes.MakeRequest, id) }
+export class MakeRequest extends ActionBase<string> {
+    constructor(requestId: string, modelStateName: string) { super(modelStateName, ApiActionTypes.MakeRequest, requestId) }
 }
 
-export class RequestSuccess extends ActionBase {   
-    constructor(id: string, public data: any, modelStateName: string) { 
-        super(modelStateName, ApiActionTypes.RequestSuccess, ({ id: id, data: data }));
+export class RequestSuccess extends ActionBase<{ id: string; data: any }> {   
+    constructor(requestId: string, public data: any, modelStateName: string) { 
+        super(modelStateName, ApiActionTypes.RequestSuccess, ({ id: requestId, data: data }));
     }
 }
 
-export class RequestError extends ActionBase {   
+export class RequestError extends ActionBase<string[]> {   
     constructor(errors: string[], modelStateName: string) { super(modelStateName, ApiActionTypes.RequestError, errors) }
 }
 
-export class MakeCancellableRequest extends ActionBase {
+export class MakeCancellableRequest extends ActionBase<string> {
     constructor(id: string, modelStateName: string) { super(modelStateName, ApiActionTypes.MakeCancellableRequest, id) }
 }
 
-export class CancellableRequestSuccess extends ActionBase {   
+export class CancellableRequestSuccess extends ActionBase<{ id: string; data: any }> {   
     constructor(id: string, public data: any, modelStateName: string) { 
         super(modelStateName, ApiActionTypes.CancellableRequestSuccess, ({ id: id, data: data }));
     }
 }
 
-export class CancellableRequestError extends ActionBase {   
+export class CancellableRequestError extends ActionBase<string[]> {   
     constructor(errors: string[], modelStateName: string) { super(modelStateName, ApiActionTypes.CancellableRequestError, errors) }
 }
 

@@ -1,14 +1,14 @@
 import { AppState } from './state-models';
 import { AppStateModifier } from './app-state-adapter';
 import { AppActions, AppActionTypes } from '../actions/app-state-actions';
-import { ApiActions, ApiActionTypes } from '../actions/api-actions';
+import { ApiActions, ApiActionTypes, MakeRequest } from '../actions/api-actions';
 
 const appStateAdapter = new AppStateModifier()
 
 export function appStateReducer(appState = appStateAdapter.initialState, action: AppActions | ApiActions): AppState {
 
     let newState = { ...appState };
-    let modelState = newState[action.modelStateName];
+    let modelState = newState[action.modelStateName];    
     
     switch(action.baseType) {
 

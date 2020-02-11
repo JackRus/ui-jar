@@ -19,3 +19,19 @@ export interface ModelState extends EntityState<any>
     // ID OF THE CURRENTLY SELECTED ENTITY
     selectedId: string | number;
 }
+
+export interface JarNgrxConfig {
+    //deafaultRequestFormat: IFormatConverterFactory;
+    //deafaultResponseFormats: IFormatConverterFactory[];
+    //dataMapper: IDataMapper; 
+    logLevel: JarNgrxLogLevel  
+}
+
+export enum JarNgrxLogLevel {
+    None,    
+    Minimum,
+    Actions,
+    Effects,
+    ActionsAndEffects,
+    Maximum   
+} 
