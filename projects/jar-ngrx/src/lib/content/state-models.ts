@@ -14,6 +14,7 @@ export interface ModelState extends EntityState<any>
 
     // NUMBER OF PENDING HTTP REQUESTS FOR THIS ENTITY
     pendingRequests: number;
+    pendingCancellableRequest: boolean;
 
     // ID OF THE CURRENTLY SELECTED ENTITY
     selectedId: string | number;

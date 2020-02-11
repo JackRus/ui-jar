@@ -50,7 +50,7 @@ export class AppStateModifier {
         return copy;
     }
    
-    resetAppStates(state: AppState) : AppState { return this.initialState }
+    resetAppState() : AppState { return this.initialState }
 
 
     //////////////////////////////////////
