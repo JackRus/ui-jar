@@ -115,11 +115,15 @@ export abstract class ModelServiceBase<T> {
 
     // DISPATCHERS
     dispatch() { }
+    dispatchCancellable() { }
 
     // SELECTORS
-    selectAll(): ImmutableObservable<T[]> { return new ImmutableObservable(this.items$); }
-    selectTotal(): ImmutableObservable<number> { return new ImmutableObservable(this.total$); }
-    selectSelectedItem(): ImmutableObservable<T> { return new ImmutableObservable(this.selectedItem$); }
+    selectAll(): ImmutableObservable<T[]> { return new ImmutableObservable(this.items$) }
+    selectTotal(): ImmutableObservable<number> { return new ImmutableObservable(this.total$) }
+    selectSelectedItem(): ImmutableObservable<T> { return new ImmutableObservable(this.selectedItem$) }
+    selectSelectedId(): ImmutableObservable<string | number> { return new ImmutableObservable(this.selectedId$) }
+    selectById(id: string | number) { }
+    selectErrors(): ImmutableObservable<string[]> { return new ImmutableObservable(this.errors$) }
 
    
     // CROSS COMPONENT DIRTY STATE MONITORING
