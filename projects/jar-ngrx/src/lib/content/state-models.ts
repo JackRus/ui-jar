@@ -7,7 +7,7 @@ export interface AppState
 }
 
 // REPRESENTS STATE FOR EACH ENTITY/MODEL
-export interface ModelState extends EntityState<any>
+export interface ModelState<T = any> extends EntityState<T>
 {    
     // COLLECTION OF ERRORS FOR THIS ENTITY
     errors: string[];   

@@ -1,4 +1,5 @@
 import { ActionBase } from './action-models'
+import { Type } from '@angular/core'
 
 export enum AppActionTypes {
     // APP STATE ACTIONS

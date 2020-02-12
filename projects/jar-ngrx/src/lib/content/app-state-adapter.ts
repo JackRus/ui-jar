@@ -7,6 +7,15 @@ export const modelStateAdapter = createEntityAdapter<any>({
     //sortComparer: (e1: any, e2: any) => e1.order - e2.order  
 });
 
+// SELECTORS
+export const { selectAll, selectEntities, selectTotal, selectIds } = modelStateAdapter.getSelectors();
+export const selectedId = (state: ModelState) => state.selectedId;
+export const selectErrors = (state: ModelState) => state.errors;
+export const selectLoading = (state: ModelState) => state.pendingRequests > 0;
+export const selectCancellableLoading = (state: ModelState) => state.pendingCancellableRequest;
+
+
+
 export class AppStateModifier {   
     
     ///////////////////////////////
@@ -26,8 +35,9 @@ export class AppStateModifier {
        
         // ADD MODEL STATE
         copy[name] = modelStateAdapter.getInitialState({
-            errors: [],
+            errors: [] as string[],
             pendingRequests: 0,
+            pendingCancellableRequest: false,
             selectedId: null
         });
 
