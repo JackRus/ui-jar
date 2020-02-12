@@ -1,5 +1,5 @@
 import { AppState } from './state-models';
-import { AppStateModifier } from './app-state-adapter';
+import { AppStateModifier } from './app-state-modifier';
 import { AppActions, AppActionTypes } from '../actions/app-state-actions';
 import { ApiActions, ApiActionTypes, MakeRequest } from '../actions/api-actions';
 

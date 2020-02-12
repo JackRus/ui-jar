@@ -4,12 +4,12 @@ import { JarNgrxModule } from '../jar-ngrx.module';
 import { Router } from '@angular/router';
 import { Observable, combineLatest } from 'rxjs';
 import { AddModelState, SelectNewId as SelectNewId } from '../actions/app-state-actions';
-import * as adapter from '../store/app-state-adapter'
+import * as adapter from '../store/app-state-modifier'
 import { Dictionary } from '@ngrx/entity';
 import { map, takeUntil, filter, take, distinctUntilChanged } from 'rxjs/operators';
-import { ImmutableObservable } from '../helpers/immutable-observable';
+import { ImmutableObservable } from './immutable-observable';
 import { EventEmitter } from '@angular/core';
-import { RouterHelperService } from './router-helper';
+import { RouterHelperService } from './router-helper.service';
 
 export interface ModelServiceBaseOptions {
     watchRouteParam?: string,
@@ -106,7 +106,26 @@ export abstract class ModelServiceBase<T> {
         }            
     }
     
-    
+    // HTTP METHODS
+    public get GET()  {
+        //return this.dataService.GET(this.uniqueName, this.endpoint);
+    }
+
+    public get POST() {
+        //return this.dataService.POST(this.uniqueName, this.endpoint);
+    }
+
+    public get PUT() {
+        //return this.dataService.PUT(this.uniqueName, this.endpoint);
+    }
+
+    public get PATCH() {
+        //return this.dataService.PATCH(this.uniqueName, this.endpoint);
+    }
+
+    public get DELETE() {
+        //return this.dataService.DELETE(this.uniqueName, this.endpoint);
+    }
 
 
     /////////////////////////

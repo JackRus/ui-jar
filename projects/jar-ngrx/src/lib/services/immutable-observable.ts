@@ -27,19 +27,16 @@ export class ImmutableObservable<T> extends Observable<T>
         });        
     }
 
-    reset(): void {
-        if (this.lastValue)
-            this.resetObservable$.next({ lastValue: true, val: this.lastValue });
-    }
+    reset(): void { if (this.lastValue) this.resetObservable$.next({ lastValue: true, val: this.lastValue }); }
 }
 
-//How to make customs operators https://angularfirebase.com/lessons/custom-rxjs-operators-by-example/
 /**
- * convert to an inmutable observable.
+ * OPERATOR - CONVERTS OBSERVABLE INTO IMMUTABLE
  */
 export const makeImmutable = () => (source: Observable<any>) => {
     return new ImmutableObservable(source);
 };
+
 
 function makeShadowCopy(value: any): any {
     //make copy of every item if it is array
@@ -52,9 +49,7 @@ function makeShadowCopy(value: any): any {
         return { ...objVal };
     }
 
-    //we can return string because they are inmutable.
-    //for values like number they are passed by value and not by reference, so is safe to return them.
-    //for functions just return the value because they are inmutable as well.
+    // ALL OTHER TYPE DON"T NEED MODIFICATIONS
     return value;
 }
 
