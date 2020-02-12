@@ -17,9 +17,8 @@ export abstract class ModelServiceBase<T> {
     private store: Store<AppState>;
     protected router: Router;
 
-    // 
+    // ROOUTE PARAM CHANGES
     routeParam$: Observable<string>;
-
 
     // FOUNDATION 
     private modelState$: Observable<ModelState<T>>;
@@ -55,7 +54,7 @@ export abstract class ModelServiceBase<T> {
         this.store.dispatch(new AddModelState(this.modelStateName));
     }
 
-    setupSelectors() {
+    setupFoundation() {
         // MODEL SATE SELECTOR
         const state = createFeatureSelector<AppState, ModelState<T>>(this.modelStateName);
         
@@ -65,7 +64,9 @@ export abstract class ModelServiceBase<T> {
         this.total$ = this.store.select(createSelector(state, selectTotal));
         this.errors$ = this.store.select(createSelector(state, selectErrors));
         this.selectedId$ = this.store.select(createSelector(state, selectedId));
-        
+        this.isLoading$ = this.store.select(createSelector(state, selectLoading));
+        this.isCancellableLoading$ = this.store.select(createSelector(state, selectCancellableLoading));
+        this.selectecEntity$ = 
 
     }
 }
