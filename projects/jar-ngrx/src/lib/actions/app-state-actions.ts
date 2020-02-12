@@ -18,7 +18,7 @@ export enum AppActionTypes {
     UpdateMany = '[MODEL STATE] Update Many',
     UpsertOne = '[MODEL STATE] Upsert One',
     UpsertMany = '[MODEL STATE] Upsert Many',
-    SelectOne = '[MODEL STATE] Select One',
+    SelectNewId = '[MODEL STATE] Select One',
 }
 
 /////////////////////////////
@@ -81,9 +81,9 @@ export class UpsertMany extends ActionBase {
     constructor(entities: any[], modelStateName: string) { super(modelStateName, AppActionTypes.UpsertMany, entities) }
 }
 
-export class SelectOne extends ActionBase {
+export class SelectNewId extends ActionBase {
     readonly type: string;
-    constructor(id: string | number, modelStateName: string) { super(modelStateName, AppActionTypes.SelectOne, id) }
+    constructor(id: string | number, modelStateName: string) { super(modelStateName, AppActionTypes.SelectNewId, id) }
 }
 
 export type AppActions =
@@ -95,4 +95,4 @@ ReplaceAll |
 RemoveOne | RemoveMany | RemoveAll |
 UpdateOne | UpdateMany |
 UpsertOne | UpsertMany | 
-SelectOne;
+SelectNewId;

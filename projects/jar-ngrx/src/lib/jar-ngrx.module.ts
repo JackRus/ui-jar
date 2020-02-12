@@ -1,10 +1,10 @@
 import { NgModule, Injector, ModuleWithProviders } from '@angular/core';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
-import { appStateReducer } from './content/app-state-reducer';
+import { appStateReducer } from './store/app-state-reducer';
 import { AppStateEffects } from './effects/app-state-effects';
 import { ApiEffects } from './effects/api-effects';
-import { JarNgrxConfig } from './content/state-models';
+import { JarNgrxConfig } from './store/state-models';
 
 
 

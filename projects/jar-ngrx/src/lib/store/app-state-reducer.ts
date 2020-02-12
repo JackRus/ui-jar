@@ -59,7 +59,7 @@ export function appStateReducer(appState = appStateAdapter.initialState, action:
         case AppActionTypes.UpsertOne: return appStateAdapter.upsertOne(action.payload, action.modelStateName, appState);
         case AppActionTypes.UpsertMany: return appStateAdapter.upsertMany(action.payload, action.modelStateName, appState);
 
-        case AppActionTypes.SelectOne: return appStateAdapter.assignSelectedId(action.payload, action.modelStateName, appState);
+        case AppActionTypes.SelectNewId: return appStateAdapter.assignSelectedId(action.payload, action.modelStateName, appState);
         default: return appState;
     }    
 }
