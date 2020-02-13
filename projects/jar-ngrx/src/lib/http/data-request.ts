@@ -1,5 +1,4 @@
-import { HttpMethodsEnum } from './http-methods';
-import { KeyValuePair } from './key-value-pair';
+import { HttpMethodsEnum, IModelMapper, KeyValuePair, ICompleter } from './http-models';
 
 export class DataRequest {
    
@@ -7,10 +6,12 @@ export class DataRequest {
     private _params: KeyValuePair[];  // the params to include in the url.
     private _baseUrl: string;
     private _modelStateName: string;
-    private _body: any = null;    
-    private _url: string = null; // the constructed url.   
-    private _requestType: HttpMethodsEnum;    
-    private _chainedRequest: (resp: any) => DataRequest = null;  // create a request after this one is completed
+    private _body: any;    
+    private _url: string; // the constructed url.   
+    private _requestType: HttpMethodsEnum;  
+    private _mapper: IModelMapper;  
+    private _completer: ICompleter;
+    private _chainedRequest: (data: any) => DataRequest;  // create a request after this one is completed
     
     /** get the request type asociated with this provider. */
     get requestType(): HttpMethodsEnum { return this._requestType }
@@ -44,6 +45,12 @@ export class DataRequest {
     /** get the base url of this request */
     get baseUrl() { return this._baseUrl; }
 
+    /**  */
+    get mapper() { return this._mapper; }
+
+    /**  */
+    get completer() { return this._completer; }
+
     constructor(modelStateName: string, baseUrl: string, requestType: HttpMethodsEnum) {       
         this._baseUrl = baseUrl;
         this._modelStateName = modelStateName;
@@ -63,13 +70,7 @@ export class DataRequest {
      * add body to the request (only valid for POST and PUT requests)
      * @param body the body to add
      */
-    withBody(body: any): DataRequest {
-        if (this._requestType != 'POST' && this._requestType != 'PUT' && this._requestType != 'PATCH')
-            throw "request body is only valid for POST, PATCH and PUT requests.";
-
-        if (this._body != null)
-            throw "request body can only be assigned one time.";
-
+    withBody(body: any): DataRequest {     
         this._body = body;
         return this;
     }
@@ -79,8 +80,31 @@ export class DataRequest {
         return this;
     }
 
-    then(req: (resp: any) => DataRequest) {
-        this._chainedRequest = req;
+    /**
+     * Callback which will be executed if request is successful. Accespts response data and returns array of Actions.
+     * Actions will be dispatched in parallel.
+     * @param mapper Callback function
+     */
+    withMapper(mapper: IModelMapper){
+        this._mapper = mapper;
+        return this;
+    }
+
+    /**
+     * Chained request callback which will be executed if request is successful.
+     * @param chainedRequest Callback function
+     */
+    then(chainedRequest: (data: any) => DataRequest) {
+        this._chainedRequest = chainedRequest;
+        return this;
+    }
+
+    /**
+     * Custom function which will be executed if request is successful.
+     * @param completer Callback function
+     */
+    completeWith(completer: ICompleter) {
+        this._completer = completer;
         return this;
     }
 }

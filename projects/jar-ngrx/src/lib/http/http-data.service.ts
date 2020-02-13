@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { DataRequest } from './data-request';
 import { HttpClient } from '@angular/common/http';
-import { HttpMethodsEnum } from './http-methods';
+import { HttpMethodsEnum } from './http-models';
 import { Observable, of } from 'rxjs';
 import { JarNgrxConfig } from '../store/state-models';
 

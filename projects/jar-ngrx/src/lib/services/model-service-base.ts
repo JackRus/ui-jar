@@ -10,7 +10,7 @@ import { ImmutableObservable } from './immutable-observable';
 import { EventEmitter } from '@angular/core';
 import { RouterHelperService } from './router-helper.service';
 import { HttpDataService } from '../http/http-data.service';
-import { HttpMethodsEnum } from '../http/http-methods';
+import { HttpMethodsEnum } from '../http/http-models';
 import { DataRequest } from '../http/data-request';
 import { MakeRequest, MakeCancellableRequest } from '../actions/api-actions';
 
@@ -123,8 +123,8 @@ export abstract class ModelServiceBase<T> {
     /////////////////////////
 
     // DISPATCHERS
-    dispatch(request: DataRequest) { this.store.dispatch(new MakeRequest(request, this.modelStateName)) }
-    dispatchCancellable(request: DataRequest) { this.store.dispatch(new MakeCancellableRequest(request, this.modelStateName)) }
+    dispatch(request: DataRequest) { this.store.dispatch(new MakeRequest(request)) }
+    dispatchCancellable(request: DataRequest) { this.store.dispatch(new MakeCancellableRequest(request)) }
 
     // SELECTORS
     selectAll(): ImmutableObservable<T[]> { return new ImmutableObservable(this.items$) }
