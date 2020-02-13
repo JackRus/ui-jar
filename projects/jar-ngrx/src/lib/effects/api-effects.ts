@@ -25,7 +25,7 @@ export class ApiEffects {
 
     @Effect()
     makeCancellableRequest$ = createEffect(() => this.actions$.pipe(       
-        ofType<MakeCancellableRequest>(ApiActionTypes.MakeRequest),
+        ofType<MakeCancellableRequest>(ApiActionTypes.MakeCancellableRequest),
         mergeMap(action => this.httpService.executeRequest(action.payload).pipe(
             map(response => new CancellableRequestSuccess(action.payload, response)),
             catchError(err => of(new CancellableRequestError(this.getErrors(err), action.payload.modelStateName)))
@@ -34,7 +34,7 @@ export class ApiEffects {
 
     @Effect()
     requestSuccess$ = createEffect(() => this.actions$.pipe(       
-        ofType<RequestSuccess>(ApiActionTypes.MakeRequest),
+        ofType<RequestSuccess>(ApiActionTypes.RequestSuccess),
         mergeMap(action => {
             const request = action.payload.request;
             const responseData = action.payload.data;
@@ -85,9 +85,10 @@ export class ApiEffects {
         switch(request.requestType) {
             case HttpMethodsEnum.GET: return isArray ? new ReplaceAll(data, request.modelStateName) : new UpsertOne(data, request.modelStateName);
             case HttpMethodsEnum.POST: return isArray ? new AddMany(data, request.modelStateName) : new AddOne(data, request.modelStateName);
+            case HttpMethodsEnum.DELETE: return isArray ? new RemoveMany(data.map(x => x.id), request.modelStateName) : new AddOne(data.id, request.modelStateName);
             case HttpMethodsEnum.PATCH: return isArray ? new UpsertMany(data, request.modelStateName) : new AddOne(data, request.modelStateName);
             case HttpMethodsEnum.PUT: return isArray ? new UpsertMany(data, request.modelStateName) : new AddOne(data, request.modelStateName);
-            case HttpMethodsEnum.DELETE: return isArray ? new RemoveMany(data.map(x => x.id), request.modelStateName) : new AddOne(data.id, request.modelStateName);
+            
             default: return null;
         }
     }

@@ -18,6 +18,10 @@ export enum ResponseDataType
     Json = "json",
     Text = "text",    
 }
+
+export enum ResponseAction {
+    
+}
  
 export class KeyValuePair { 
     constructor(public name: string, public value: string) { }

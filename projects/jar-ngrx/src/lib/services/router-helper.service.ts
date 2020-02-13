@@ -13,9 +13,7 @@ export class RouterHelperService {
         this.subscription = this.router.events.pipe(filter(e => e instanceof NavigationEnd));
     }
 
-    /**
-       * Returns object, where properties match route parameters names and values     
-    */
+    /** Returns object, where properties match route parameters names and values */
     getAllRouteParams(): Params {
         let params: Params = {};
 
@@ -44,8 +42,8 @@ export class RouterHelperService {
     }
 
     /**
-       * Navigates to the provided route or URL
-       * @param route Url address or app route
+     * Navigates to the provided route or URL
+     * @param route Url address or app route
     */
     goTo(route: string) {
         this.router.navigateByUrl(route);
@@ -64,19 +62,11 @@ export class RouterHelperService {
             distinctUntilChanged());
     }
 
-    /**
-     * EMITS ON EVERY NAIGATION END EVENT
-     */ 
-    watchRouter(): Observable<Event> {
-        return this.subscription.pipe(startWith(null));
-    }
+    /** EMITS ON EVERY NAIGATION END EVENT */ 
+    watchRouter(): Observable<Event> { return this.subscription.pipe(startWith(null)) }
 
-    /**
-     * Returns current full URL
-     */
-    getCurrentRoute() {
-        return this.router.url;
-    }
+    /** Returns current full URL */
+    getCurrentRoute() { return this.router.url; }
 
     /**
        * Checks if the current url has the path

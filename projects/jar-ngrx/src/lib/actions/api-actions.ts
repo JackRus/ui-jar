@@ -9,10 +9,7 @@ export enum ApiActionTypes {
 
     MakeCancellableRequest = '[API] Make Cancellable Request',
     CancellableRequestSuccess = '[API] Cancellable Request Success',
-    CancellableRequestError = '[API] Cancellable Request Error',
-
-    SuccessMapping = '[API] Success Mapping', // CHECK IF NEEDED
-    EndRequest = '[API] End Request', 
+    CancellableRequestError = '[API] Cancellable Request Error'
 }
 
 export class MakeRequest extends ActionBase<DataRequest> {
@@ -43,18 +40,9 @@ export class CancellableRequestError extends ActionBase<string[]> {
     constructor(errors: string[], modelStateName: string) { super(modelStateName, ApiActionTypes.CancellableRequestError, errors) }
 }
 
-export class SuccessMapping extends ActionBase {   
-    constructor(modelStateName: string) { super(modelStateName, ApiActionTypes.SuccessMapping) }
-}
-
-export class EndRequest extends ActionBase {   
-    constructor(modelStateName: string) { super(modelStateName, ApiActionTypes.EndRequest) }
-}
 
 export type ApiActions = 
 MakeRequest |
 MakeCancellableRequest | 
-RequestSuccess |
-RequestError |
-SuccessMapping |
-EndRequest;
+RequestSuccess | CancellableRequestSuccess |
+RequestError | CancellableRequestError;

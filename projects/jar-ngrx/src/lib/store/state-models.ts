@@ -1,4 +1,5 @@
-import { createEntityAdapter, EntityState } from '@ngrx/entity';
+import { EntityState } from '@ngrx/entity';
+import { IFormatConverter } from '../converters/shared-models';
 
 // REPRESENTS STRUCTURE OF THE MAIN/APP STATE
 export interface AppState
@@ -20,10 +21,8 @@ export interface ModelState<T = any> extends EntityState<T>
     selectedId: string | number;
 }
 
-export interface JarNgrxConfig {
-    //deafaultRequestFormat: IFormatConverterFactory;
-    //deafaultResponseFormats: IFormatConverterFactory[];
-    //dataMapper: IDataMapper; 
+export interface JarNgrxConfig {    
+    deafaultConverter?: IFormatConverter[];    
     logLevel: JarNgrxLogLevel  
 }
 

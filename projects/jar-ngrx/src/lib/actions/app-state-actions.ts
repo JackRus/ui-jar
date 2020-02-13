@@ -53,12 +53,12 @@ export class ReplaceAll extends ActionBase {
     constructor(entities: any[], modelStateName: string) { super(modelStateName, AppActionTypes.ReplaceAll, entities) }
 }
 
-export class RemoveOne extends ActionBase {    
-    constructor(entity: any, modelStateName: string) { super(modelStateName, AppActionTypes.RemoveOne, entity) }
+export class RemoveOne extends ActionBase<string | number> {    
+    constructor(id: string | number, modelStateName: string) { super(modelStateName, AppActionTypes.RemoveOne, id) }
 }
 
-export class RemoveMany extends ActionBase {   
-    constructor(entities: any[], modelStateName: string) { super(modelStateName, AppActionTypes.RemoveMany, entities) }
+export class RemoveMany extends ActionBase<string[] | number[]> {   
+    constructor(ids: string[] | number[], modelStateName: string) { super(modelStateName, AppActionTypes.RemoveMany, ids) }
 }
 
 export class RemoveAll extends ActionBase {   

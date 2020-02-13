@@ -2,7 +2,7 @@ import { Store, createFeatureSelector, createSelector } from '@ngrx/store';
 import { AppState, ModelState } from '../store/state-models';
 import { JarNgrxModule } from '../jar-ngrx.module';
 import { Observable, combineLatest } from 'rxjs';
-import { AddModelState, SelectNewId as SelectNewId } from '../actions/app-state-actions';
+import { AddModelState, SelectNewId as SelectNewId, RemoveAll, ReplaceAll, AddOne, AddMany, UpsertOne, UpsertMany, UpdateOne, UpdateMany, RemoveOne, RemoveMany } from '../actions/app-state-actions';
 import * as adapter from '../store/app-state-modifier'
 import { Dictionary } from '@ngrx/entity';
 import { map, takeUntil, filter, take, distinctUntilChanged } from 'rxjs/operators';
@@ -93,7 +93,7 @@ export abstract class ModelServiceBase<T> {
 
     private setupSubscribtions() {
         // RESET DIRTY STATE WHEN THE SELECTED ENTITY CHANGED/WAS UPDATED
-        this.selectedItem$.subscribe(() => { this.reset(); });
+        this.selectedItem$.subscribe(() => { this.DIRTY_Reset(); });
 
         // MONITOR SELECTED ID CHANGES IN THE ROUTE AND UPDATE ID IN THE STATE
         if (this.options && this.options.watchRouteParam) {
@@ -117,48 +117,84 @@ export abstract class ModelServiceBase<T> {
     get PATCH() { return new DataRequest(this.modelStateName, this.endpoint, HttpMethodsEnum.PATCH) }
     get DELETE() { return new DataRequest(this.modelStateName, this.endpoint, HttpMethodsEnum.DELETE) }
 
+    
+    /*************************************************************************************/
+    /**********************************  EXPOSED API *************************************/
+    /*************************************************************************************/
 
-    /////////////////////////
-    ////// EXPOSED API //////
-    /////////////////////////
+    
+    /////////////////
+    // DISPATCHERS //
+    /////////////////
 
-    // DISPATCHERS
     dispatch(request: DataRequest) { this.store.dispatch(new MakeRequest(request)) }
     dispatchCancellable(request: DataRequest) { this.store.dispatch(new MakeCancellableRequest(request)) }
 
-    // SELECTORS
-    selectAll(): ImmutableObservable<T[]> { return new ImmutableObservable(this.items$) }
-    selectTotal(): ImmutableObservable<number> { return new ImmutableObservable(this.total$) }
-    selectSelectedItem(): ImmutableObservable<T> { return new ImmutableObservable(this.selectedItem$) }
-    selectSelectedId(): ImmutableObservable<string | number> { return new ImmutableObservable(this.selectedId$) }
-    selectById(id: string | number) { }
-    selectErrors(): ImmutableObservable<string[]> { return new ImmutableObservable(this.errors$) }
+    
+    ///////////////
+    // SELECTORS //
+    ///////////////
+
+    SELECT_All(): ImmutableObservable<T[]> { return new ImmutableObservable(this.items$) }
+    SELECT_Total(): ImmutableObservable<number> { return new ImmutableObservable(this.total$) }
+    SELECT_SelectedItem(): ImmutableObservable<T> { return new ImmutableObservable(this.selectedItem$) }
+    SELECT_SelectedId(): ImmutableObservable<string | number> { return new ImmutableObservable(this.selectedId$) }
+    SELECT_ById(id: string | number): ImmutableObservable<T> { return new ImmutableObservable(this.itemsDictionary$.pipe(map(items => items[id]))) }
+    SELECT_Errors(): ImmutableObservable<string[]> { return new ImmutableObservable(this.errors$) }
+    SELECT_IsLoading(): ImmutableObservable<boolean> { return new ImmutableObservable(this.isLoading$) }
+    SELECT_isCancellableLoading(): ImmutableObservable<boolean> { return new ImmutableObservable(this.isCancellableLoading$) }
+
+    /////////////////////////
+    // MODEL STATE ACTIONS //
+    /////////////////////////
+
+    /** Removes all items from Model State */
+    STATE_Reset() { this.store.dispatch(new RemoveAll(this.modelStateName)) }
+
+    /** Replaces all items with new collection */
+    STATE_ReplaceAll(items: T[]) { this.store.dispatch(new ReplaceAll(items, this.modelStateName)) }
+
+    /** Adds a single item to the state or Updates if item exists */
+    STATE_AddOne(item: T) { this.store.dispatch(new UpsertOne(item, this.modelStateName)) }
+
+    /** Adds items to the state or Updates if items exist */
+    STATE_AddMany(items: T[]) { this.store.dispatch(new UpsertMany(items, this.modelStateName)) }
+
+    /** Updates a single item in the state if item exists */
+    STATE_UpdateOne(item: T) { this.store.dispatch(new UpdateOne(item, this.modelStateName)) }
+
+    /**  Updates items in the state if items exist  */
+    STATE_UpdateMany(items: T[]) { this.store.dispatch(new UpdateMany(items, this.modelStateName)) }
+
+    /** Removes a single item from the state */
+    STATE_RemoveOne(id: string | number) { this.store.dispatch(new RemoveOne(id, this.modelStateName)) }
+
+    /** Removes items from the state */
+    STATE_RemoveMany(ids: string[] | number[]) { this.store.dispatch(new RemoveMany(ids, this.modelStateName)) }
     
     ////////////////////////////////////////////
     // CROSS COMPONENT DIRTY STATE MONITORING //
     ////////////////////////////////////////////
-    watch(source: Observable<boolean>, stopOn: Observable<any>) {
+
+    DIRTY_Watch(source: Observable<boolean>, stopOn: Observable<any>) {
         const id = new Date().getTime();
         source.pipe(takeUntil(stopOn)).subscribe(x => this.dirtyState[id] = x);
     }
 
-    onSave(f: () => void, stopOn: Observable<any>) {
-        this.$save.pipe(takeUntil(stopOn)).subscribe(f);
-    }
+    DIRTY_OnSave(f: () => void, stopOn: Observable<any>) { this.$save.pipe(takeUntil(stopOn)).subscribe(f) }
+    DIRTY_Save(): void { this.$save.emit() }
 
-    save(): void { this.$save.emit() }
-
-    onReset(f: () => void, stopOn: Observable<any>) {
+    DIRTY_OnReset(f: () => void, stopOn: Observable<any>) {
         this.$reset.pipe(takeUntil(stopOn)).subscribe(f);
     }
 
-    reset(): void {
+    DIRTY_Reset(): void {
         this.$reset.emit();
         const keys = Object.keys(this.dirtyState);
         keys.forEach(k => this.dirtyState[k] = false);
     }
 
-    isDirty() : boolean {
+    DIRTY_IsDirty() : boolean {
         const keys = Object.keys(this.dirtyState);
         return keys.some(k => this.dirtyState[k]);
     }
