@@ -1,7 +1,6 @@
 import { Store, createFeatureSelector, createSelector } from '@ngrx/store';
 import { AppState, ModelState } from '../store/state-models';
 import { JarNgrxModule } from '../jar-ngrx.module';
-import { Router } from '@angular/router';
 import { Observable, combineLatest } from 'rxjs';
 import { AddModelState, SelectNewId as SelectNewId } from '../actions/app-state-actions';
 import * as adapter from '../store/app-state-modifier'
@@ -10,6 +9,10 @@ import { map, takeUntil, filter, take, distinctUntilChanged } from 'rxjs/operato
 import { ImmutableObservable } from './immutable-observable';
 import { EventEmitter } from '@angular/core';
 import { RouterHelperService } from './router-helper.service';
+import { HttpDataService } from '../http/http-data.service';
+import { HttpMethodsEnum } from '../http/http-methods';
+import { DataRequest } from '../http/data-request';
+import { MakeRequest, MakeCancellableRequest } from '../actions/api-actions';
 
 export interface ModelServiceBaseOptions {
     watchRouteParam?: string,
@@ -21,6 +24,7 @@ export abstract class ModelServiceBase<T> {
     // TOOLS
     private store: Store<AppState>;
     protected routerService: RouterHelperService;
+    private httpService: HttpDataService;
     private $reset = new EventEmitter();
     private $save = new EventEmitter();
     private dirtyState = {}; // Container for mitoring dirty state of components
@@ -50,18 +54,18 @@ export abstract class ModelServiceBase<T> {
     {
         // DEP INJECTIONS
         this.store = JarNgrxModule.injector.get(Store) as Store<AppState>;
-        this.routerService = JarNgrxModule.injector.get(RouterHelperService);
-
+        this.routerService = JarNgrxModule.injector.get(RouterHelperService); 
+        this.httpService = JarNgrxModule.injector.get(HttpDataService);
 
         if (options) {
-            
+            // TODO 
 
         }
 
-        this.initiateModelSate();
+        this.initiate();
     }
 
-    private initiateModelSate() {
+    private initiate() {
         this.store.pipe(filter(s => !!s[this.modelStateName]), take(1)).subscribe(() => this.setup());
         this.store.dispatch(new AddModelState(this.modelStateName));
     }
@@ -107,25 +111,11 @@ export abstract class ModelServiceBase<T> {
     }
     
     // HTTP METHODS
-    public get GET()  {
-        //return this.dataService.GET(this.uniqueName, this.endpoint);
-    }
-
-    public get POST() {
-        //return this.dataService.POST(this.uniqueName, this.endpoint);
-    }
-
-    public get PUT() {
-        //return this.dataService.PUT(this.uniqueName, this.endpoint);
-    }
-
-    public get PATCH() {
-        //return this.dataService.PATCH(this.uniqueName, this.endpoint);
-    }
-
-    public get DELETE() {
-        //return this.dataService.DELETE(this.uniqueName, this.endpoint);
-    }
+    get GET() { return new DataRequest(this.modelStateName, this.endpoint, HttpMethodsEnum.GET) }
+    get POST() { return new DataRequest(this.modelStateName, this.endpoint, HttpMethodsEnum.POST) }
+    get PUT() { return new DataRequest(this.modelStateName, this.endpoint, HttpMethodsEnum.PUT) }
+    get PATCH() { return new DataRequest(this.modelStateName, this.endpoint, HttpMethodsEnum.PATCH) }
+    get DELETE() { return new DataRequest(this.modelStateName, this.endpoint, HttpMethodsEnum.DELETE) }
 
 
     /////////////////////////
@@ -133,8 +123,8 @@ export abstract class ModelServiceBase<T> {
     /////////////////////////
 
     // DISPATCHERS
-    dispatch() { }
-    dispatchCancellable() { }
+    dispatch(request: DataRequest) { this.store.dispatch(new MakeRequest(request, this.modelStateName)) }
+    dispatchCancellable(request: DataRequest) { this.store.dispatch(new MakeCancellableRequest(request, this.modelStateName)) }
 
     // SELECTORS
     selectAll(): ImmutableObservable<T[]> { return new ImmutableObservable(this.items$) }
@@ -143,9 +133,10 @@ export abstract class ModelServiceBase<T> {
     selectSelectedId(): ImmutableObservable<string | number> { return new ImmutableObservable(this.selectedId$) }
     selectById(id: string | number) { }
     selectErrors(): ImmutableObservable<string[]> { return new ImmutableObservable(this.errors$) }
-
-   
-    // CROSS COMPONENT DIRTY STATE MONITORING
+    
+    ////////////////////////////////////////////
+    // CROSS COMPONENT DIRTY STATE MONITORING //
+    ////////////////////////////////////////////
     watch(source: Observable<boolean>, stopOn: Observable<any>) {
         const id = new Date().getTime();
         source.pipe(takeUntil(stopOn)).subscribe(x => this.dirtyState[id] = x);

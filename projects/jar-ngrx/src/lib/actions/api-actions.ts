@@ -1,5 +1,5 @@
 import { ActionBase } from './action-models';
-import { createAction, props } from '@ngrx/store';
+import { DataRequest } from '../http/data-request';
 
 export enum ApiActionTypes {
     
@@ -15,13 +15,13 @@ export enum ApiActionTypes {
     EndRequest = '[API] End Request', 
 }
 
-export class MakeRequest extends ActionBase<string> {
-    constructor(requestId: string, modelStateName: string) { super(modelStateName, ApiActionTypes.MakeRequest, requestId) }
+export class MakeRequest extends ActionBase<DataRequest> {
+    constructor(request: DataRequest) { super(request.modelStateName, ApiActionTypes.MakeRequest, request) }
 }
 
-export class RequestSuccess extends ActionBase<{ id: string; data: any }> {   
-    constructor(requestId: string, public data: any, modelStateName: string) { 
-        super(modelStateName, ApiActionTypes.RequestSuccess, ({ id: requestId, data: data }));
+export class RequestSuccess extends ActionBase<{ request: DataRequest; data: any }> {   
+    constructor(request: DataRequest, public data: any) { 
+        super(request.modelStateName, ApiActionTypes.RequestSuccess, ({ request: request, data: data }));
     }
 }
 
@@ -29,13 +29,13 @@ export class RequestError extends ActionBase<string[]> {
     constructor(errors: string[], modelStateName: string) { super(modelStateName, ApiActionTypes.RequestError, errors) }
 }
 
-export class MakeCancellableRequest extends ActionBase<string> {
-    constructor(id: string, modelStateName: string) { super(modelStateName, ApiActionTypes.MakeCancellableRequest, id) }
+export class MakeCancellableRequest extends ActionBase<DataRequest> {
+    constructor(request: DataRequest) { super(request.modelStateName, ApiActionTypes.MakeCancellableRequest, request) }
 }
 
-export class CancellableRequestSuccess extends ActionBase<{ id: string; data: any }> {   
-    constructor(id: string, public data: any, modelStateName: string) { 
-        super(modelStateName, ApiActionTypes.CancellableRequestSuccess, ({ id: id, data: data }));
+export class CancellableRequestSuccess extends  ActionBase<{ request: DataRequest; data: any }> {   
+    constructor(request: DataRequest, public data: any) { 
+        super(request.modelStateName, ApiActionTypes.CancellableRequestSuccess, ({ request: request, data: data }));
     }
 }
 
